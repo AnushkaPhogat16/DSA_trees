@@ -1,54 +1,26 @@
 class Solution {
 public:
     vector<int> partitionLabels(string s) {
-        map<char, pair<int, int> > intervals;
+        vector<int> last(26, 0); // Stores the last occurrence of each character
 
-        // for each char - {start index, end index}
-
-        for(int i = 0 ; i < s.size(); i++){
-            if(intervals.find(s[i]) == intervals.end()){
-                intervals[s[i]] = {i , i};
-            }else{
-                intervals[s[i]].second = i;
-            }
+        // Step 1: Find the last index of each character in the string
+        for (int i = 0; i < s.size(); i++) {
+            last[s[i] - 'a'] = i;  // Store last occurrence index
         }
 
-        vector<pair<int, int>> sorted_intervals;
-        for (auto& entry : intervals) {
-            sorted_intervals.push_back(entry.second); // Copy the {start, end} pairs
-        }
-
-        sort(sorted_intervals.begin(), sorted_intervals.end()); // Sort by start index
-
-        int start_ind = sorted_intervals[0].first;
-        int end_ind = sorted_intervals[0].second;
-
-        vector<pair<int, int>> mergedIntervals;
-
-        for(auto eachInterv : sorted_intervals){
-            if (eachInterv.first <= end_ind){
-                end_ind = max(eachInterv.second, end_ind);
-            }else{
-                mergedIntervals.push_back({start_ind, end_ind});
-                start_ind = eachInterv.first;
-                end_ind = eachInterv.second;
-            }
-
-        }
-
-        mergedIntervals.push_back({start_ind, end_ind});
-
+        // Step 2: Traverse again to form partitions
         vector<int> ans;
+        int start = 0, end = 0;
 
-        for(auto eachIntervSize : mergedIntervals){
-            int size = eachIntervSize.second - eachIntervSize.first + 1;
+        for (int i = 0; i < s.size(); i++) {
+            end = max(end, last[s[i] - 'a']);  // Expand the partition to include all occurrences
 
-            ans.push_back(size);
+            if (i == end) { // If we reach the end of a partition
+                ans.push_back(end - start + 1); 
+                start = i + 1; // Start a new partition
+            }
         }
 
         return ans;
-
-
-
     }
 };
