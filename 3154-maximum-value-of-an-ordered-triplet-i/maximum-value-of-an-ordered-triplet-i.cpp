@@ -5,21 +5,14 @@ public:
         int n = nums.size();
         long long maxVal = 0;
 
-        int maxLeft = nums[0];
-        vector<int> suffMax(n, 0);
-        suffMax[n - 1] = nums[n - 1];
+        long long bestDif = INT_MIN;
+        int maxi = nums[0];
 
-        for(int k = n - 2; k >= 0; k--){
-            suffMax[k] = max(nums[k], suffMax[k + 1]);
-        }
+        for(int k = 2; k < n; k++){
+            bestDif = max(bestDif, (long long)(maxi - nums[k - 1] ));
+            maxVal = max(maxVal , (long long)(bestDif * nums[k]));
+            maxi = max(maxi, nums[k - 1]);
 
-        for(int j = 1; j < n - 1; j++){
-            if(nums[j] < maxLeft){
-                long long eq = (long long)(maxLeft - nums[j]) * suffMax[j + 1];
-                maxVal = max(maxVal, eq);
-            }
-
-            maxLeft = max(maxLeft, nums[j]);
         }
 
         return maxVal;
