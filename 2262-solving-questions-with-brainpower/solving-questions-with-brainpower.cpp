@@ -1,18 +1,24 @@
 class Solution {
 public:
+    int n;
+    long long solve(int i, vector<vector<int>>& questions, vector<long long>& t){
+
+        if(i >= n) return 0;
+
+        if(t[i] != -1) return t[i];
+
+        long long taken = questions[i][0] + solve(i + questions[i][1] + 1, questions, t);
+        long long not_taken = solve(i + 1, questions, t);
+
+        return t[i] = max(taken, not_taken);
+
+    }
+
     long long mostPoints(vector<vector<int>>& questions) {
-        vector<long long> dp(questions.size(), 0);
-        for (int i = questions.size() - 1; i >= 0; i--) {
-            int index = i + questions[i][1] + 1;
-            if (index < questions.size()) {
-                dp[i] = dp[index] + questions[i][0];
-            } else {
-                dp[i] = questions[i][0];
-            }
-            if (i < questions.size() - 1) {
-                dp[i] = max(dp[i + 1], dp[i]);
-            }
-        }
-        return dp[0];
+        n = questions.size();
+
+        vector<long long> t(n + 1, -1);
+
+        return solve(0, questions, t);
     }
 };
