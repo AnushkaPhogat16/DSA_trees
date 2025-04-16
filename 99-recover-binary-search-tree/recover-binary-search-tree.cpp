@@ -10,35 +10,35 @@
  * };
  */
 class Solution {
+private:
+    TreeNode* first;
+    TreeNode* prev;
+    TreeNode* mid;
+    TreeNode* last;
 public:
-    void recoverTree(TreeNode* root) {
-        vector<TreeNode*> inorderNodes;
-        inorderTrav(root, inorderNodes);
+    void inorderTrav(TreeNode* root){
+        if(!root) return;
 
-        TreeNode* first = nullptr;
-        TreeNode* second = nullptr;
+        inorderTrav(root->left);
 
-        // Find the two nodes that are out of order
-        for (int i = 0; i < inorderNodes.size() - 1; ++i) {
-            if (inorderNodes[i]->val > inorderNodes[i + 1]->val) {
-                if (!first) {
-                    first = inorderNodes[i];
-                }
-                second = inorderNodes[i + 1];
+        if(prev != NULL && (root->val < prev->val)){
+            if(first == NULL){
+                first = prev;
+                mid = root;
+            }else{
+                last = root;
             }
         }
 
-        // Swap the values of the two nodes
-        if (first && second) {
-            swap(first->val, second->val);
-        }
+        prev = root;
+        inorderTrav(root->right);
     }
+    void recoverTree(TreeNode* root) {
+        first = mid = last = NULL;
+        prev = new TreeNode(INT_MIN);
+        inorderTrav(root);
 
-    void inorderTrav(TreeNode* root, vector<TreeNode*>& inorderVec) {
-        if (!root) return;
-
-        inorderTrav(root->left, inorderVec);
-        inorderVec.push_back(root);
-        inorderTrav(root->right, inorderVec);
+        if(first && last) swap(first->val , last->val);
+        else if(first && mid) swap(first->val, mid->val);
     }
 };
