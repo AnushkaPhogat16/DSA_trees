@@ -1,20 +1,23 @@
 class Solution {
 public:
-    TreeNode* search(TreeNode* root, int target, TreeNode* avoid) {
-        while (root) {
-            if (root->val == target && root != avoid) return root;
-            root = (target < root->val) ? root->left : root->right;
-        }
-        return nullptr;
-    }
-
-    bool findPair(TreeNode* root, TreeNode* node, int k) {
-        if (!node) return false;
-        if (search(root, k - node->val, node)) return true;
-        return findPair(root, node->left, k) || findPair(root, node->right, k);
+    void inorder(TreeNode* root, vector<int>& nums) {
+        if (!root) return;
+        inorder(root->left, nums);
+        nums.push_back(root->val);
+        inorder(root->right, nums);
     }
 
     bool findTarget(TreeNode* root, int k) {
-        return findPair(root, root, k);
+        vector<int> nums;
+        inorder(root, nums); // Get sorted array
+
+        int left = 0, right = nums.size() - 1;
+        while (left < right) {
+            int sum = nums[left] + nums[right];
+            if (sum == k) return true;
+            else if (sum < k) left++;
+            else right--;
+        }
+        return false;
     }
 };
