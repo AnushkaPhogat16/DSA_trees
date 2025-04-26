@@ -1,27 +1,34 @@
+#include <queue>
+using namespace std;
+
 class MyStack {
+private:
+    queue<int> q;
+
 public:
-queue<int> q;
     MyStack() {
     }
     
     void push(int x) {
-        int s = q.size();
         q.push(x);
-        for(int i = 1; i <= s; i++){
+        int size = q.size();
+        // Rotate the queue to make the last pushed element the front
+        while (size > 1) {
             q.push(q.front());
             q.pop();
-        }        
+            size--;
+        }
     }
     
     int pop() {
-        int topEl = q.front();
+        if (q.empty()) return -1;
+        int topElement = q.front();
         q.pop();
-        return topEl;
+        return topElement;
     }
     
     int top() {
-        int topEl = q.front();
-        return topEl;
+        return q.empty() ? -1 : q.front();
     }
     
     bool empty() {
