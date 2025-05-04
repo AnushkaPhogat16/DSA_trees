@@ -2,47 +2,40 @@ class Solution {
 public:
     string pushDominoes(string dominoes) {
         int n = dominoes.length();
-        vector<int> closesInRHStoL(n);   // nearest 'L' to the right
-        vector<int> closestInLHStoR(n);  // nearest 'R' to the left
+        vector<int> forces(n, 0);
 
-        // L to R: Track closest 'R'
-        for (int i = 0; i < n; i++) {
+        int force = 0;
+        // Left to right for 'R'
+        for (int i = 0; i < n; ++i) {
             if (dominoes[i] == 'R') {
-                closestInLHStoR[i] = i;
-            } else if (dominoes[i] == '.') {
-                closestInLHStoR[i] = i > 0 ? closestInLHStoR[i - 1] : -1;
+                force = n;  // maximum force
+            } else if (dominoes[i] == 'L') {
+                force = 0;
             } else {
-                closestInLHStoR[i] = -1;
+                force = max(force - 1, 0);
             }
+            forces[i] += force;
         }
 
-        // R to L: Track closest 'L'
-        for (int i = n - 1; i >= 0; i--) {
+        force = 0;
+        // Right to left for 'L'
+        for (int i = n - 1; i >= 0; --i) {
             if (dominoes[i] == 'L') {
-                closesInRHStoL[i] = i;
-            } else if (dominoes[i] == '.') {
-                closesInRHStoL[i] = i < n - 1 ? closesInRHStoL[i + 1] : -1;
+                force = n;
+            } else if (dominoes[i] == 'R') {
+                force = 0;
             } else {
-                closesInRHStoL[i] = -1;
+                force = max(force - 1, 0);
             }
+            forces[i] -= force;
         }
 
         string result(n, '.');
-        for (int i = 0; i < n; i++) {
-            if (dominoes[i] != '.') {
-                result[i] = dominoes[i];
-                continue;
-            }
-
-            int distFromL = closesInRHStoL[i] == -1 ? INT_MAX : abs(closesInRHStoL[i] - i);
-            int distFromR = closestInLHStoR[i] == -1 ? INT_MAX : abs(closestInLHStoR[i] - i);
-
-            if (distFromL == distFromR) {
-                result[i] = '.';
-            } else if (distFromL < distFromR) {
-                result[i] = 'L';
-            } else {
+        for (int i = 0; i < n; ++i) {
+            if (forces[i] > 0) {
                 result[i] = 'R';
+            } else if (forces[i] < 0) {
+                result[i] = 'L';
             }
         }
 
