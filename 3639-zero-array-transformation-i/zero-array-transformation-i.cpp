@@ -1,19 +1,40 @@
 class Solution {
 public:
     bool isZeroArray(vector<int>& nums, vector<vector<int>>& queries) {
-        vector<int> diff(nums.size() + 1, 0);
-        for (const auto& q : queries) {
-            diff[q[0]]++; // diff[l]++
-            if (q[1] + 1 < nums.size())
-                diff[q[1] + 1]--; // diff[r + 1]--
+
+        int n = nums.size();
+
+        //step 1- make difff array using query
+        vector<int> diff(n, 0);
+        for(auto &query : queries){
+            int start = query[0];
+            int end = query[1];
+
+            //whatever you want to + or -
+            int x = 1;
+
+            diff[start] += x;
+            if(end + 1 < n){
+                diff[end + 1] -= x;
+            }
         }
 
-        int cnt = 0;
-        for (int i = 0; i < nums.size(); i++) {
-            cnt += diff[i];
-            if (nums[i] > cnt)
-                return false;
+        //step 2- find cumulative effect on each index
+        vector<int> result(n, 0);
+        int cumSum = 0;
+        for(int i =0 ; i < n; i++){
+            cumSum += diff[i];
+            result[i] = cumSum;
         }
-        return true;
+
+        for(int i = 0; i < n ; i++){
+            if(result[i] < nums[i]){
+                return false;
+            }
+        } 
+
+        return true;       
     }
+
+
 };
