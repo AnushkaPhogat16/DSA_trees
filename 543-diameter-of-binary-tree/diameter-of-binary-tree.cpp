@@ -12,10 +12,12 @@
 class Solution {
 public:
     int diameterOfBinaryTree(TreeNode* root) {
-        int dia = 0;
-        maxH(root, dia);
 
-        return dia;
+        int diameter = INT_MIN;
+
+        maxH(root, diameter);
+
+        return diameter;
     }
 
     int maxH(TreeNode* root, int& dia){
@@ -24,8 +26,10 @@ public:
         int lh = maxH(root->left, dia);
         int rh = maxH(root->right, dia);
 
-        dia = max(dia, lh+rh);
+        dia = max(dia, lh + rh);
 
-        return 1 + max(lh, rh);
+        return 1 + max(lh , rh);
+
+
     }
 };
