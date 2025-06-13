@@ -1,6 +1,7 @@
 class Solution {
 public:
     vector<int> nextGreaterElements(vector<int>& nums) {
+        //BRUTE FORCE
         vector<int> ans(nums.size() , -1);
         for(int i = 0; i < nums.size(); i++){
             for(int j = i + 1; j <= i + nums.size() - 1; j++){
