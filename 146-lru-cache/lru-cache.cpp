@@ -3,7 +3,7 @@ public:
     list<int> dll; //key
     // doubly linked list
      
-    map<int, pair<list<int>::iterator, int>> mp;
+    unordered_map<int, pair<list<int>::iterator, int>> mp;
     // address type in linked list
 
     int n;
