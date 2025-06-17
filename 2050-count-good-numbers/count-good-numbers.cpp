@@ -1,22 +1,22 @@
 class Solution {
-private:
-    static constexpr int mod = 1000000007;
-
 public:
-    int countGoodNumbers(long long n) {
-        // use fast exponentiation to calculate x^y % mod
-        auto quickmul = [](int x, long long y) -> int {
-            int ret = 1, mul = x;
-            while (y > 0) {
-                if (y % 2 == 1) {
-                    ret = (long long)ret * mul % mod;
-                }
-                mul = (long long)mul * mul % mod;
-                y /= 2;
-            }
-            return ret;
-        };
 
-        return (long long)quickmul(5, (n + 1) / 2) * quickmul(4, n / 2) % mod;
+    const int M = 1e9 + 7;
+
+    int findPower(long long a, long long b){
+        if(b == 0) return 1;
+
+        long long half = findPower(a, b/2);
+        long long result = (half*half) % M;
+
+        if(b % 2 == 1){
+            result = (result * a) % M;
+        }
+
+        return result;
+    }
+
+    int countGoodNumbers(long long n) {
+        return (long long)findPower( 5 , (n + 1)/2) * findPower(4, n/2) % M;
     }
 };
