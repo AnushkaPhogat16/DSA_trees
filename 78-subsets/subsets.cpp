@@ -2,29 +2,24 @@ class Solution {
 public:
     vector<vector<int>> subsets(vector<int>& nums) {
         vector<vector<int>> ans;
-        int n = nums.size();
-
-        int i = 0;
-        vector<int> currSubset = {};
-
-        helper(nums,currSubset, ans, n, i);
-
+        vector<int> currSubset;
+        helper(nums, currSubset, ans, 0);
         return ans;
     }
 
-    void helper(vector<int>& nums, vector<int> currSubset, vector<vector<int>>& ans, int n, int index){
-        
-        if(index == n){
+private:
+    void helper(vector<int>& nums, vector<int>& currSubset, vector<vector<int>>& ans, int index) {
+        if (index == nums.size()) {
             ans.push_back(currSubset);
             return;
         }
 
-        // at each index we can either take or not
+        // Include current element
         currSubset.push_back(nums[index]);
-        helper(nums, currSubset, ans, n, index + 1);
+        helper(nums, currSubset, ans, index + 1);
 
+        // Exclude current element (backtrack)
         currSubset.pop_back();
-        helper(nums, currSubset, ans, n, index + 1);
-
+        helper(nums, currSubset, ans, index + 1);
     }
 };
