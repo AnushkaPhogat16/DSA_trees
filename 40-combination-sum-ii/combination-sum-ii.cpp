@@ -1,29 +1,27 @@
 class Solution {
 public:
-    vector<vector<int>> combinationSum2(vector<int>& candidates, int target) {
-        sort(candidates.begin(), candidates.end());  // sort for duplicate handling
-        vector<vector<int>> ans;
+    vector<vector<int>> combinationSum2(vector<int>& nums, int target) {
+        vector<vector<int>> result;
         vector<int> curr;
-        helper(0, target, candidates, curr, ans);
-        return ans;
+
+        sort(nums.begin(), nums.end());
+        solve(nums, target, curr, result, 0);
+        return result;
     }
 
-    void helper(int index, int target, vector<int>& candidates, vector<int>& curr, vector<vector<int>>& ans) {
+    void solve(vector<int>& nums, int target, vector<int>& curr, vector<vector<int>>& result, int index) {
+        if (target < 0) return;
         if (target == 0) {
-            ans.push_back(curr);
+            result.push_back(curr);
             return;
         }
 
-        for (int i = index; i < candidates.size(); ++i) {
-            // Skip duplicates
-            if (i > index && candidates[i] == candidates[i - 1])
+        for (int i = index; i < nums.size(); i++) {
+            if (i > index && nums[i] == nums[i - 1])
                 continue;
 
-            if (candidates[i] > target)
-                break;
-
-            curr.push_back(candidates[i]);
-            helper(i + 1, target - candidates[i], candidates, curr, ans);  // i + 1 because each number used once
+            curr.push_back(nums[i]);
+            solve(nums, target - nums[i], curr, result, i + 1);
             curr.pop_back();
         }
     }
