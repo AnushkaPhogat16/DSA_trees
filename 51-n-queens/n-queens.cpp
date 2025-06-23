@@ -2,53 +2,38 @@ class Solution {
 public:
     vector<vector<string>> result;
     int N;
+    unordered_set<int> cols, diag1, diag2;
 
-    bool isAllowed(vector<string>& board, int row, int col){
-
-        // check upwards
-        for(int i = row - 1; i >= 0; i--){
-            if(board[i][col] == 'Q') return false;
-        }
-
-        // check left diagonol upwards
-        for(int i = row - 1, j = col - 1 ; i >=0 && j >= 0; i--, j--){
-            if(board[i][j] == 'Q') return false;
-        }
-
-        // check right diagonol upwards
-        for(int i = row - 1, j = col + 1 ; i >=0 && j < N; i--, j++){
-            if(board[i][j] == 'Q') return false;
-        }
-
-        return true;
-    }
-
-    void solve(vector<string>& board, int row){
-
-        if(row >= N){
+    void solve(vector<string>& board, int row) {
+        if (row == N) {
             result.push_back(board);
             return;
         }
 
-        for(int col = 0; col < N; col++){
-            
-            if(isAllowed(board, row, col)){
-                board[row][col] = 'Q';
-                solve(board, row + 1);
+        for (int col = 0; col < N; ++col) {
+            if (cols.count(col) || diag1.count(row - col) || diag2.count(row + col))
+                continue;
 
-                board[row][col] = '.';
-            }
+            // Place queen
+            board[row][col] = 'Q';
+            cols.insert(col);
+            diag1.insert(row - col);
+            diag2.insert(row + col);
 
+            solve(board, row + 1);
+
+            // Backtrack
+            board[row][col] = '.';
+            cols.erase(col);
+            diag1.erase(row - col);
+            diag2.erase(row + col);
         }
     }
 
     vector<vector<string>> solveNQueens(int n) {
-        vector<string> board(n, string(n, '.'));
         N = n;
-
+        vector<string> board(n, string(n, '.'));
         solve(board, 0);
-
         return result;
-
     }
 };
