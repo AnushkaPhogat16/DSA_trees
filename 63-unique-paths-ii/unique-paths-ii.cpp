@@ -7,30 +7,30 @@ public:
         if(obstacleGrid[0][0] == 1 || obstacleGrid[rows - 1][cols - 1] == 1)
             return 0;
 
-        vector<vector<int>> dp(rows, vector<int>(cols, 0));
+        vector<int> prev(cols, 0);
 
-        // Fixing first column initialization
         for (int i = 0; i < rows; i++) {
-            if (obstacleGrid[i][0] == 1) break;
-            dp[i][0] = 1;
-        }
+            vector<int> curr(cols, 0);
+            for (int j = 0; j < cols; j++) {
+                if(i == 0 && j == 0) curr[j] = 1;
+                else{
+                    int up = 0, left = 0;
+                    if(i > 0 && obstacleGrid[i-1][j] != 1){
+                        up = prev[j];
+                    }
 
-        // Fixing first row initialization
-        for (int j = 0; j < cols; j++) {
-            if (obstacleGrid[0][j] == 1) break;
-            dp[0][j] = 1;
-        }
+                    if(j > 0 && obstacleGrid[i][j-1] != 1){
+                        left = curr[j-1];
+                    }
 
-        for (int i = 1; i < rows; i++) {
-            for (int j = 1; j < cols; j++) {
-                if (obstacleGrid[i][j] == 1) {
-                    dp[i][j] = 0;
-                } else {
-                    dp[i][j] = dp[i - 1][j] + dp[i][j - 1];
+                    curr[j] = (obstacleGrid[i][j] == 1) ? 0 : (up + left);
                 }
+                
             }
+
+            prev = curr;
         }
 
-        return dp[rows - 1][cols - 1];
+        return prev[cols - 1];
     }
 };
