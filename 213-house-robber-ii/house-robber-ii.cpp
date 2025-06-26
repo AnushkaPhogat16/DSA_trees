@@ -1,27 +1,42 @@
 class Solution {
 public:
-    int t[101];
     int rob(vector<int>& nums) {
         int n = nums.size();
         if(n == 1) return nums[0];
-        memset(t, -1, sizeof(t));
-        int firstCase = solve(nums,0, n - 1);
-        memset(t, -1, sizeof(t));
-        int secondCase = solve(nums, 1, n);
+        if(n == 2) return max(nums[0], nums[1]);
 
-        return max(firstCase, secondCase);
-    }
+        int prev1 = nums[0];
+        int prev2 = 0;
+        int currCase1 = 0;
 
-    int solve(vector<int>& nums, int index, int n){        
+        for(int i = 1; i < n - 1; i++){
+            int take = nums[i] + prev2;
+            int notTake = prev1;
 
-        if(index >= n) return 0; 
+            currCase1 = max(take, notTake);
 
-        if(t[index] != -1) return t[index];
+            int t = prev1;
+            prev1 = currCase1;
+            prev2  = t;
+        }
 
-        int take = nums[index] + solve(nums, index + 2, n);
-        int notTake = solve(nums, index + 1, n);
+        prev1 = nums[1];
+        prev2 = 0;
+        int currCase2 = 0;
 
-        return t[index] = max(take, notTake);
+        for(int i = 2; i < n; i++){
+            int take = nums[i] + prev2;
+            int notTake = prev1;
 
+            currCase2 = max(take, notTake);
+
+            int t = prev1;
+            prev1 = currCase2;
+            prev2  = t;
+        }
+
+
+
+        return max(currCase1, currCase2);
     }
 };
