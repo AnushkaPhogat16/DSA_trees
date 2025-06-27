@@ -6,19 +6,22 @@ public:
         int ind = 0;
         int row = 0;
         
-        vector<vector<int>> dp(rows, vector<int>(rows, 0));
+        vector<int> bottRow(rows, 0);
 
         for(int i = 0; i < rows; i++){
-            dp[rows - 1][i] = triangle[rows-1][i];
+            bottRow[i] = triangle[rows-1][i];
         }
 
         for (int row = rows - 2; row >= 0; row--) {
+            vector<int> curr(rows, 0);
             for (int col = 0; col <= row; col++) {
-                dp[row][col] = triangle[row][col] + min(dp[row+1][col], dp[row+1][col+1]);
+                curr[col] = triangle[row][col] + min( bottRow[col], bottRow[col+1] );
             }
+
+            bottRow = curr;
         }
 
-        return dp[0][0];
+        return bottRow[0];
 
     }
 };
