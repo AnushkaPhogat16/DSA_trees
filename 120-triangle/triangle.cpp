@@ -1,26 +1,24 @@
 class Solution {
 public:
-    int t[201][201];
+
     int minimumTotal(vector<vector<int>>& triangle) {
         int rows = triangle.size();
         int ind = 0;
         int row = 0;
-        memset(t, -1, sizeof(t));
-        return solve(ind, row, rows, triangle);
-    }
+        
+        vector<vector<int>> dp(rows, vector<int>(rows, 0));
 
-    int solve(int ind, int row, int totalRows, vector<vector<int>>& tri){
-        if(row == totalRows-1){
-            return tri[row][ind];
+        for(int i = 0; i < rows; i++){
+            dp[rows - 1][i] = triangle[rows-1][i];
         }
 
-        if(row >= totalRows) return INT_MAX;
+        for (int row = rows - 2; row >= 0; row--) {
+            for (int col = 0; col <= row; col++) {
+                dp[row][col] = triangle[row][col] + min(dp[row+1][col], dp[row+1][col+1]);
+            }
+        }
 
-        if(t[row][ind] != -1) return t[row][ind];
+        return dp[0][0];
 
-        int down = solve(ind, row + 1, totalRows, tri);
-        int dright = solve(ind + 1, row + 1, totalRows, tri);
-
-        return t[row][ind] = tri[row][ind] + min(down, dright);
     }
 };
