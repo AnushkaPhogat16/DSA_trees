@@ -1,30 +1,29 @@
 class Solution {
 public:
-    int t[201][201];  // memoization table
-
     int minPathSum(vector<vector<int>>& grid) {
         int m = grid.size();
         int n = grid[0].size();
 
-        memset(t, -1, sizeof(t));
+        vector<vector<int>> dp(m, vector<int>(n, 0));
 
-        return solve(grid, m - 1, n - 1);
-    }
+        dp[0][0] = grid[0][0];
 
-    int solve(vector<vector<int>>& grid, int row, int col) {
-        // base case: start cell
-        if (row == 0 && col == 0) return grid[0][0];
+        for(int i = 1; i < m; i++){
+            dp[i][0] = dp[i-1][0] + grid[i][0];
+        }
+        for(int j = 1; j < n; j++){
+            dp[0][j] = dp[0][j-1] + grid[0][j];
+        }
 
-        // out-of-bounds check
-        if (row < 0 || col < 0) return INT_MAX;
+        int minSum = INT_MAX;
+        int sum = 0;
 
-        // memoized result
-        if (t[row][col] != -1) return t[row][col];
+        for(int i = 1; i < m; i++){
+            for(int j = 1; j < n; j++){
+                dp[i][j] = grid[i][j] + min(dp[i-1][j] , dp[i][j-1]);
+            }
+        }
 
-        int fromTop = solve(grid, row - 1, col);
-        int fromLeft = solve(grid, row, col - 1);
-
-        // store and return minimum path sum to (row, col)
-        return t[row][col] = grid[row][col] + min(fromTop, fromLeft);
+        return dp[m-1][n-1];
     }
 };
