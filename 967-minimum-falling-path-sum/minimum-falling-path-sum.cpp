@@ -6,25 +6,27 @@ public:
         int rows = matrix.size();
         int cols = matrix[0].size();
 
-        vector<vector<int>> dp(rows, vector<int>(cols, 1));
+        vector<int> prev(cols, 0);
 
         for(int i = 0; i < cols; i++){
-            dp[0][i] = matrix [0][i];                        
+            prev[i] = matrix[0][i];                     
         }
 
         for(int i = 1; i < rows; i++){
+            vector<int> curr(cols,0);
             for(int j = 0; j < cols; j++){
-                int up = dp[i-1][j];
-                int dl = (j > 0) ? dp[i-1][j-1] : INT_MAX;
-                int dr = (j < cols - 1) ? dp[i-1][j+1] : INT_MAX;
+                int up = prev[j];
+                int dl = (j > 0) ? prev[j-1] : INT_MAX;
+                int dr = (j < cols - 1) ? prev[j+1] : INT_MAX;
 
-                dp[i][j] = matrix[i][j] + min(up, min(dl, dr));
+                curr[j] = matrix[i][j] + min(up, min(dl, dr));
                 
             }
+            prev = curr;
         }    
 
         for(int j = 0; j < cols; j++){
-            minSum = min(minSum, dp[rows-1][j]);
+            minSum = min(minSum, prev[j]);
         }            
 
         return minSum;
