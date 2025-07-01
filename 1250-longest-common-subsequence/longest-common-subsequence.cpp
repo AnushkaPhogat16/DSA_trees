@@ -4,30 +4,35 @@ public:
         int n = text1.size();
         int m = text2.size();
 
-        vector<vector<int>> dp(n, vector<int>(m, 0));
+        vector<int> prev(m, 0);
 
         for(int j = 0; j < m; j++){
-            if(text1[0] == text2[j]) dp[0][j] = 1;
-            else if(j > 0) dp[0][j] = dp[0][j-1];
+            if(text1[0] == text2[j]) prev[j] = 1;
+            else if(j > 0) prev[j] = prev[j-1];
         }
 
-        // Initialize first column
-        for(int i = 0; i < n; i++){
-            if(text1[i] == text2[0]) dp[i][0] = 1;
-            else if(i > 0) dp[i][0] = dp[i-1][0];
-        }
-
-        // Fill rest of the table
         for(int i = 1; i < n; i++){
-            for(int j = 1; j < m; j++){
+            vector<int> curr(m, 0);
+            for(int j = 0; j < m; j++){
                 if(text1[i] == text2[j]){
-                    dp[i][j] = 1 + dp[i-1][j-1];
+
+                    if(j > 0)
+                        curr[j] = 1 + prev[j-1];
+                    else
+                        curr[j] = 1;
+                    
+                    
+                    
                 } else {
-                    dp[i][j] = max(dp[i-1][j], dp[i][j-1]);
+                    if(j > 0)
+                        curr[j] = max(prev[j], curr[j-1]);
+                    else
+                        curr[j] = prev[j];
                 }
             }
+            prev = curr;
         }
 
-        return dp[n-1][m-1];
+        return prev[m-1];
     }
 };
