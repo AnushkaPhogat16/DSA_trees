@@ -1,6 +1,5 @@
 class Solution {
 public:
-    int t[501][501];
     int minDistance(string word1, string word2) {
         int n = word1.length();
         int m = word2.length();
@@ -8,26 +7,23 @@ public:
         int i = n-1;
         int j = m-1;
 
-        memset(t, -1, sizeof(t));
+        vector<vector<int>> dp(n+1, vector<int>(m+1, 0));
 
-        int commonChars = solve(i, j, word1, word2);
+        for(int i = 1; i <= n; i++){
+            for(int j = 1; j <= m; j++){
+                if(word1[i-1] == word2[j-1]){
+                    dp[i][j] = 1+ dp[i-1][j-1];
+                }else{
+                    dp[i][j] = max(dp[i-1][j], dp[i][j-1]);
+                }
+            }
+        }    
+
+        int commonChars = dp[n][m];
 
         return n + m - 2*commonChars;
 
 
     } 
 
-    int solve(int i, int j, string& w1, string& w2){
-        if(i < 0 || j < 0){
-            return 0;
-        }
-
-        if(t[i][j] != -1) return t[i][j];
-
-        if(w1[i] == w2[j]){
-            return t[i][j] = 1 + solve(i - 1, j - 1, w1, w2);
-        }
-
-        return t[i][j] = max(solve(i, j - 1, w1, w2), solve(i-1, j, w1, w2));
-    }
 };
