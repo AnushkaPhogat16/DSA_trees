@@ -4,26 +4,27 @@ public:
         int n = word1.size();
         int m = word2.size();
 
-        vector<vector<int>> dp(n + 1, vector<int>(m + 1, 0));
+        vector<int> prev(m + 1, 0), curr(m + 1, 0);
 
-        // Base cases
-        for (int i = 0; i <= n; i++) dp[i][0] = i; // converting word1[0..i-1] to empty = i deletions
-        for (int j = 0; j <= m; j++) dp[0][j] = j; // converting empty to word2[0..j-1] = j insertions
+        // Base case for the first row (converting "" to word2[0..j-1])
+        for (int j = 0; j <= m; j++) prev[j] = j;
 
         for (int i = 1; i <= n; i++) {
+            curr[0] = i;  // Base case: converting word1[0..i-1] to ""
             for (int j = 1; j <= m; j++) {
                 if (word1[i - 1] == word2[j - 1]) {
-                    dp[i][j] = dp[i - 1][j - 1]; // no operation needed
+                    curr[j] = prev[j - 1];
                 } else {
-                    dp[i][j] = 1 + min({
-                        dp[i - 1][j],     // delete
-                        dp[i][j - 1],     // insert
-                        dp[i - 1][j - 1]  // replace
+                    curr[j] = 1 + min({
+                        prev[j],      // delete
+                        curr[j - 1],  // insert
+                        prev[j - 1]   // replace
                     });
                 }
             }
+            prev = curr;
         }
 
-        return dp[n][m];
+        return prev[m];
     }
 };
