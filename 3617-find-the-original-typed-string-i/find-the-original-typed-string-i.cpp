@@ -1,19 +1,12 @@
 class Solution {
 public:
     int possibleStringCount(string word) {
-        if (word.empty()) return 0; 
-
-        int ans = 0;
-        char prev = word[0];
-
-        for (int i = 1; i < word.length(); i++) {
-            if (word[i] == prev) {
-                ans++;
-            } else {
-                prev = word[i];
-            }
+    int count=1;
+    for(char i=0;i<word.size()-1;i++){
+        if(word[i]==word[i+1]){
+        count++;
         }
-
-        return ans + 1;
+    } 
+    return count;   
     }
 };
