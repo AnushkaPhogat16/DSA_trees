@@ -2,29 +2,24 @@ class Solution {
 public:
     int maxProfit(vector<int>& prices) {
         int n = prices.size();
-        vector<vector<int>> dp(n+1, vector<int>(2, -1));
+        vector<int> next(2,0);
 
-        return solve(0, 1, prices, dp);
-    }
-    
-    int solve(int ind, int canBuy, vector<int>& prices, vector<vector<int>>& dp){
+        next[0] = next[1] = 0;
 
-        if(ind == prices.size()){
-            return 0;
+        for(int ind = n-1; ind >= 0; ind--){
+            vector<int> curr(2, 0);
+            for(int canBuy = 0; canBuy <=1; canBuy++){
+                long profit = 0;
+                if(canBuy == 1){
+                    profit = max( (-prices[ind] + next[0]), next[1] );
+                }else{
+                    profit = max( (prices[ind] + next[1]), next[0] );
+                }
+                curr[canBuy] = profit;
+            }
+            next = curr;
         }
 
-        if(dp[ind][canBuy] != -1) return dp[ind][canBuy];
-
-        if(canBuy == 1){
-            int buy = -prices[ind] + solve(ind + 1, 0, prices, dp);
-            int notBought = solve(ind + 1, 1, prices, dp);
-
-            return dp[ind][canBuy] = max(buy, notBought);
-        }else{
-            int sell = prices[ind] + solve(ind + 1, 1, prices, dp);
-            int notSold = solve(ind + 1, 0, prices, dp);
-
-            return dp[ind][canBuy] = max(sell, notSold);
-        }
+        return (next[1]);
     }
 };
