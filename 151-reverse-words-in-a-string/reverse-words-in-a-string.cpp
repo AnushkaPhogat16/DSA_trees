@@ -1,31 +1,26 @@
 class Solution {
 public:
     string reverseWords(string s) {
-        stack<char> word;
-        bool atStart = true;
-        string ans = "";
+        string ans;
+        int i = s.size() - 1;
 
-        for(int i = s.size() - 1; i >= -1; i--){
-            // end‐of‐string or end‐of‐word?
-            if (i == -1 || (s[i] == ' ' && !atStart)) {
-                if (!word.empty()) {
-                    // only add a space if this isn't the first word
-                    if (!ans.empty()) 
-                        ans += ' ';
+        while (i >= 0) {
+            // 1) skip any spaces
+            while (i >= 0 && s[i] == ' ') i--;
+            if (i < 0) break;
 
-                    // dump the reversed word
-                    while (!word.empty()) {
-                        ans += word.top();
-                        word.pop();
-                    }
-                }
-                atStart = true;
-            }
-            // accumulate letters into the stack
-            else if (s[i] != ' ') {
-                word.push(s[i]);
-                atStart = false;
-            }
+            // 2) mark end of the current word
+            int j = i;
+
+            // 3) find start of the word
+            while (i >= 0 && s[i] != ' ') i--;
+
+            // 4) append a separator if this isn’t the first word
+            if (!ans.empty()) 
+                ans += ' ';
+
+            // 5) append the word s[i+1 .. j]
+            ans.append(s, i + 1, j - i);
         }
 
         return ans;
