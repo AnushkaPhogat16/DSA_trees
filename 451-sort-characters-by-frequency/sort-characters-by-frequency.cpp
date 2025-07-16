@@ -1,29 +1,20 @@
 class Solution {
 public:
-    typedef pair<char, int> p;
     string frequencySort(string s) {
-        vector<p> vec(123);
+        unordered_map<char, int> freqMap;
+        for (char ch : s) freqMap[ch]++;
 
-        for(char &ch : s){
-            int freq = vec[ch].second;
-            vec[ch] = {ch, freq+1};
+        // Bucket sort: bucket[i] holds all characters with frequency i
+        int n = s.size();
+        vector<vector<char>> buckets(n + 1);
+        for (auto &[ch, freq] : freqMap) {
+            buckets[freq].push_back(ch);
         }
 
-        auto lambda = [&](p &p1, p &p2){
-            return p1.second > p2.second;
-        };
-
-        sort(begin(vec), end(vec), lambda);
-
-        string res = "";
-
-        for(int i = 0; i <= 122; i++){
-            if(vec[i].second > 0){
-                char ch = vec[i].first;
-                int f = vec[i].second;
-
-                string tmp = string(f, ch);
-                res += tmp;
+        string res;
+        for (int i = n; i > 0; --i) {
+            for (char ch : buckets[i]) {
+                res += string(i, ch);
             }
         }
 
