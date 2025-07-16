@@ -1,40 +1,31 @@
 class Solution {
 public:
     int myAtoi(string s) {
-        int n = s.size();
-        int index = 0;
+        int i = 0, n = s.size();
+        // leading whitespace
+        while (i < n && s[i] == ' ') i++;
+
+        // Handle optional sign
         int sign = 1;
+        // if (i < n && (s[i] == '-' || s[i] == '+')) {
+        //     if (s[i] == '-') sign = -1;
+        //     i++;
+        // }
+        if(s[i] == '-'){
+            sign = -1;
+        }
+        if(s[i] == '-' || s[i] == '+') i++;
 
-        // skip leading white space
-        while (index < n && s[index] == ' ') {
-            index++;
+
+        // Convert digits
+        long ans = 0;
+        while (i < n && isdigit(s[i])) {
+            ans = ans * 10 + (s[i] - '0');
+            if (sign == 1 && ans > INT_MAX) return INT_MAX;
+            if (sign == -1 && -ans < INT_MIN) return INT_MIN;
+            i++;
         }
 
-        // handle sign
-        if (index < n && (s[index] == '+' || s[index] == '-')) {
-            sign = (s[index] == '-') ? -1 : 1;
-            index++;
-        }
-
-        // start recursion
-        return helper(s, index, sign, 0);
-    }
-
-    int helper(const string& s, int index, int sign, long result) {
-        // base case -> end of string or non-digit char
-        if (index >= s.size() || !isdigit(s[index])) {
-            return static_cast<int>(result * sign);
-        }
-
-        int digit = s[index] - '0';
-
-        // check for overflow before updating result
-        if (result > (INT_MAX - digit) / 10) {
-            return (sign == 1) ? INT_MAX : INT_MIN;
-        }
-
-        result = result * 10 + digit;
-
-        return helper(s, index + 1, sign, result);
+        return sign * ans;
     }
 };
