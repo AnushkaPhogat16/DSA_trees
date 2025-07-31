@@ -1,31 +1,29 @@
 class Solution {
 public:
     int divide(int dividend, int divisor) {
-        if(dividend == INT_MIN && divisor == -1) return INT_MAX;
-        if(dividend == 0) return 0;
+        if (dividend == divisor) return 1;
 
-        bool isNegative = (dividend < 0) ^ (divisor < 0);
+        bool sign = (dividend >= 0) == (divisor >= 0);
 
-        // Convert to positive and use long long to prevent overflow
-        long long absDividend = abs((long long) dividend);
-        long long absDivisor = abs((long long) divisor);
+        long long n = abs((long long)dividend);
+        long long d = abs((long long)divisor);
+        long long q = 0;
 
-        long long quotient = 0;
-
-        while (absDividend >= absDivisor) {
-            long long tempDivisor = absDivisor, multiple = 1;
-
-            // Left shift until tempDivisor exceeds absDividend
-            while ((tempDivisor << 1) <= absDividend) {
-                tempDivisor <<= 1;
-                multiple <<= 1;
+        while (n >= d) {
+            int cnt = 0;
+            while (n >= (d << (cnt + 1))) {
+                cnt++;
             }
-
-            // Subtract the largest shifted divisor
-            absDividend -= tempDivisor;
-            quotient += multiple;
+            q += 1LL << cnt;
+            n -= d << cnt;
         }
 
-        return isNegative ? -quotient : quotient;
+        q = sign ? q : -q;
+
+        // Clamp to INT range
+        if (q > INT_MAX) return INT_MAX;
+        if (q < INT_MIN) return INT_MIN;
+
+        return q;
     }
 };
