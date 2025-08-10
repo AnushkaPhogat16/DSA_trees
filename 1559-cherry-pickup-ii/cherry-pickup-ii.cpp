@@ -1,40 +1,40 @@
 class Solution {
 public:
-    int t[71][71][71];
     int cherryPickup(vector<vector<int>>& grid) {
         int rows = grid.size();
         int cols = grid[0].size();
 
-        memset(t, -1, sizeof(t));
+        vector<vector<int>> next(cols, vector<int>(cols, 0));
+        vector<vector<int>> curr(cols, vector<int>(cols, 0));
 
-        return solve(0, 0, 0, cols-1, grid);
-    }
-
-    int solve(int i1, int j1, int i2, int j2, vector<vector<int>>& grid){
-        int rows = grid.size();
-        int cols = grid[0].size();
-
-        if(i1 < 0 || i2 < 0 || j1 < 0 || j2 < 0|| i1 >= rows || i2 >= rows || j1 >= cols || j2 >= cols){
-            return INT_MIN;
-        }
-
-        if(i1 == rows-1 && i2 == rows-1){
-            return (j1 == j2) ? grid[i1][j1] : grid[i1][j1] + grid[i2][j2];
-        }
-
-        if(t[i1][j1][j2] != -1) return t[i1][j1][j2];
-
-        int maxVal = INT_MIN;
-
-        for(int j = -1; j <= 1; j++){
-            for(int k = -1; k <= 1; k++){
-                int curr = solve(i1 + 1, j1 + j, i2 + 1, j2 + k, grid);
-                maxVal = max(maxVal, curr);
+        // Base case: last row
+        for (int j1 = 0; j1 < cols; j1++) {
+            for (int j2 = 0; j2 < cols; j2++) {
+                next[j1][j2] = (j1 == j2) ? grid[rows-1][j1] : grid[rows-1][j1] + grid[rows-1][j2];
             }
         }
 
-        int sum = (j1 == j2) ? grid[i1][j1] : grid[i1][j1] + grid[i2][j2];
+        // Process from bottom-2 row up to top
+        for (int i = rows-2; i >= 0; i--) {
+            for (int j1 = 0; j1 < cols; j1++) {
+                for (int j2 = 0; j2 < cols; j2++) {
+                    int maxVal = INT_MIN;
+                    for (int dj1 = -1; dj1 <= 1; dj1++) {
+                        for (int dj2 = -1; dj2 <= 1; dj2++) {
+                            int nj1 = j1 + dj1;
+                            int nj2 = j2 + dj2;
+                            if (nj1 >= 0 && nj1 < cols && nj2 >= 0 && nj2 < cols) {
+                                maxVal = max(maxVal, next[nj1][nj2]);
+                            }
+                        }
+                    }
+                    int cherries = (j1 == j2) ? grid[i][j1] : grid[i][j1] + grid[i][j2];
+                    curr[j1][j2] = cherries + (maxVal == INT_MIN ? 0 : maxVal);
+                }
+            }
+            next = curr; // Move up one row
+        }
 
-        return t[i1][j1][j2] = maxVal + sum;
+        return next[0][cols-1];
     }
 };
