@@ -1,36 +1,31 @@
 class Solution {
 public:
-    int uniquePathsWithObstacles(vector<vector<int>>& obstacleGrid) {
-        int rows = obstacleGrid.size();
-        int cols = obstacleGrid[0].size();
+    int t[101][101];
+    int uniquePathsWithObstacles(vector<vector<int>>& grid) {
+        int rs = grid.size();
+        int rc = grid[0].size();
 
-        if(obstacleGrid[0][0] == 1 || obstacleGrid[rows - 1][cols - 1] == 1)
-            return 0;
+        if(grid[rs-1][rc-1] == 1) return 0; // destination blocked
+        memset(t, -1, sizeof(t));
 
-        vector<int> prev(cols, 0);
+        return solve(0, 0, grid);
+    }
 
-        for (int i = 0; i < rows; i++) {
-            vector<int> curr(cols, 0);
-            for (int j = 0; j < cols; j++) {
-                if(i == 0 && j == 0) curr[j] = 1;
-                else{
-                    int up = 0, left = 0;
-                    if(i > 0 && obstacleGrid[i-1][j] != 1){
-                        up = prev[j];
-                    }
+    int solve(int i, int j, vector<vector<int>>& grid){
+        if(i == grid.size()-1 && j == grid[0].size()-1) return 1;
+        if(i >= grid.size() || j >= grid[0].size()) return 0;
+        if(grid[i][j] == 1) return 0; // current cell blocked
 
-                    if(j > 0 && obstacleGrid[i][j-1] != 1){
-                        left = curr[j-1];
-                    }
+        if(t[i][j] != -1) return t[i][j];
 
-                    curr[j] = (obstacleGrid[i][j] == 1) ? 0 : (up + left);
-                }
-                
-            }
+        int down = 0, right = 0;
 
-            prev = curr;
-        }
+        if(i + 1 < grid.size() && grid[i+1][j] != 1) 
+            down = solve(i+1, j, grid);
 
-        return prev[cols - 1];
+        if(j + 1 < grid[0].size() && grid[i][j+1] != 1) 
+            right = solve(i, j+1, grid);
+
+        return t[i][j] = down + right;
     }
 };
