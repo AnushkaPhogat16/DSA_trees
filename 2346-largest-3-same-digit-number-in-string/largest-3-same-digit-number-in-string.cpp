@@ -1,13 +1,12 @@
 class Solution {
 public:
     string largestGoodInteger(string num) {
-        string ans = "";
+        char maxDigit = 0; // store only the max digit seen
         for (int i = 0; i + 2 < num.size(); i++) {
             if (num[i] == num[i+1] && num[i] == num[i+2]) {
-                string temp = num.substr(i, 3);
-                ans = max(ans, temp); // lexicographical comparison works for same length digits
+                maxDigit = max(maxDigit, num[i]); // just compare chars
             }
         }
-        return ans;
+        return maxDigit ? string(3, maxDigit) : "";
     }
 };
