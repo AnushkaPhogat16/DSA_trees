@@ -1,22 +1,12 @@
 class Solution {
 public:
     bool doesAliceWin(string s) {
-        int n = 0;
-        for(char &ch : s){
-            if(tolower(ch) == 'a' || tolower(ch) == 'e' || tolower(ch) == 'i' || tolower(ch) == 'o' || tolower(ch) == 'u'){
-                n++;
+        static const string vowels = "aeiouAEIOU";
+        for (char ch : s) {
+            if (vowels.find(ch) != string::npos) {
+                return true;   
             }
         }
-
-        if( n == 0) return false;
-
-        return true;
+        return false;
     }
 };
-
-//  qaweritoyu
-// ifodd - true
-// if even - pick any oddfirst 
-
-
-    
