@@ -1,37 +1,28 @@
 class Solution {
 public:
     int canBeTypedWords(string text, string brokenLetters) {
-        vector<bool> broken(26,false);
-
-        for(char c : brokenLetters){
-            broken[c-'a'] = true;
+        // Step 1: Store broken letters in a boolean array
+        bool broken[26] = {false};
+        for (char c : brokenLetters) {
+            broken[c - 'a'] = true;
         }
 
+        // Step 2: Traverse text word by word
         int ans = 0;
+        bool valid = true;
 
-        bool np = true;
-
-        for(int i = 0; i < text.size(); i++){
-
-            if(text[i] == ' '){
-                if(np == true) ans++;
-                
-                np=true;
-                continue;
+        for (char c : text) {
+            if (c == ' ') {
+                if (valid) ans++;  // word completed
+                valid = true;      // reset for next word
+            } 
+            else if (broken[c - 'a']) {
+                valid = false;     // mark word as invalid
             }
-
-            int val =tolower(text[i]) - 'a';
-
-            if(broken[val]){
-                np=false;
-            }
-
-            if(i == text.size() -1 && np == true){
-                ans++;
-            }
-           
         }
 
+        // Step 3: Handle the last word (no trailing space)
+        if (valid) ans++;
 
         return ans;
     }
